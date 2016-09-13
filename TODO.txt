@@ -1,0 +1,13 @@
+The following features needs implementation
+
+[Crawler]
+1. Use the same session for each crawling thread.
+2. Record response time
+
+[Monitor]
+1. Integrate email feature (Tianyang has a PR)
+2. Dynamically add to ignore lists
+3. Run as a daemon
+
+[Web Application]
+1. Write a web frontend to this program
