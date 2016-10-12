@@ -2,17 +2,16 @@
 # Created by Xinyu Chen, based on previous monitor module written by Tianyang Wen
 
 import collections
-import re
-import subprocess
 import sys
+import utils
 
 from colorama import Fore
 
-import radon.config as config
-import radon.messages as messages
-import radon.dbo as dbo
-import radon.logfilter as logfilter
-import radon.logparser as logparser
+import config
+import messages
+import dbo
+import logfilter
+import logparser
 
 
 def toggle_debug(status):
@@ -50,8 +49,7 @@ def check_commands(request):
         return False
     commands = url[11:].split('&')
     for command in commands:
-        if config.debug_mode:
-            print('DEBUG: %s' % command)
+        utils.print_debug(command)
         parts = command.split('=')
         operations[parts[0]](parts[1])
     return True

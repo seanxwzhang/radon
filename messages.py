@@ -12,6 +12,7 @@ slack_messages = {
 email_template = 'This email is sent from an automatic monitor program running on server.'
 
 
+# TODO refactor the slack related functions to support more general message content
 def send_slack_message(message_type, url, referer, agent):
     if not slack_enabled:
         return
@@ -31,8 +32,6 @@ def toggle_slack_message(status):
         slack_enabled = False
     elif status == '1':
         slack_enabled = True
-    else:
-        pass    # Do nothing if that's something other than 0 or 1
 
 
 def add_to_email_queue(content):

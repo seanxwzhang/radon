@@ -35,7 +35,7 @@ try:
                     data['recipient'] = recipient
                     sql_delete = 'DELETE FROM core_email_queue_recipients WHERE message_id = %s'
                     cursor.execute(sql_delete, (row['message_id'],))
-                    # send slack message
+                    # TODO send slack message
                     print("A possible email queue block is detected.\nRecipient email: {0}\nRecipient name: {1}".format(
                         recipient['recipient_email'], recipient['recipient_name']
                     ))
