@@ -2,12 +2,19 @@ The following features needs implementation
 
 [Crawler]
 1. Use the same session for each crawling thread.
-2. Record response time
+2. [DONE] Record response time.
 
 [Monitor]
-1. Integrate email feature (Tianyang has a PR)
+1. Integrate email feature
 2. Dynamically add to ignore lists
 3. Run as a daemon
 
 [Web Application]
-1. Write a web frontend to this program
+1. Write a web frontend to this program. This is a long term plan. Django is one of the choices. But MEAN stack is also
+   a possible choice. Although personally I am more in favor of Python.
+
+[Messages]
+1. Send Slack message part needs to be refactored. Sometimes a large volume of error messages occurs, we should limit
+   the amount of Slack messages to be sent. We can employ a exponential back-off strategy. See the following link for
+   more details (https://en.wikipedia.org/wiki/Exponential_backoff)
+2. The Slack message structure should be refactored to accommodate more general message contents and format.

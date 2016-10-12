@@ -7,7 +7,7 @@ json_payload = '{"text": "%s"}'
 
 slack_messages = {
     404: '*HTTP 404*\nURL: {0}{1}\nreferer: {2}\nUser-Agent: {3}',
-    500: '*HTTP 500*\nURL: {0}{1}\nReferrre: {2}\nUser-Agent: {3}'
+    500: '*HTTP 500*\nURL: {0}{1}\nReferrre: {2}\nUser-Agent: {3}',
 }
 email_template = 'This email is sent from an automatic monitor program running on server.'
 
