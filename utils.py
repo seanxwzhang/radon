@@ -1,4 +1,7 @@
+# Utility functions
+
 import config
+import sys
 
 
 def print_debug(message):
@@ -6,3 +9,8 @@ def print_debug(message):
     if not config.debug_mode:
         return
     print('DEBUG: %s' % message)
+
+
+def print_error(message):
+    """Print error message"""
+    print('Error: %s' % message, file=sys.stderr)

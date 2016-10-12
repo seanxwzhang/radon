@@ -17,4 +17,4 @@ The following features needs implementation
 1. Send Slack message part needs to be refactored. Sometimes a large volume of error messages occurs, we should limit
    the amount of Slack messages to be sent. We can employ a exponential back-off strategy. See the following link for
    more details (https://en.wikipedia.org/wiki/Exponential_backoff)
-2. The Slack message structure should be refactored to accommodate more general message contents and format.
+2. [Done] The Slack message structure should be refactored to accommodate more general message contents and format.

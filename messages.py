@@ -1,6 +1,7 @@
 # Messaging Subsystem
 import requests
 import config
+import utils
 
 slack_enabled = False
 json_payload = '{"text": "%s"}'
@@ -12,17 +13,14 @@ slack_messages = {
 email_template = 'This email is sent from an automatic monitor program running on server.'
 
 
-# TODO refactor the slack related functions to support more general message content
-def send_slack_message(message_type, url, referer, agent):
+def send_slack_message(message):
     if not slack_enabled:
         return
-    message = slack_messages[message_type].format(config.domain_name, url, referer, agent)
     payload = json_payload % message
     r = requests.post(config.slack_url, data=payload)
-    if config.debug_mode:
-        print('DEBUG: Slack message sent %s' % payload)
+    utils.print_debug('Slack message sent %s' % payload)
     if r.status_code != 200:
-        print('ERROR: Failed to post message to slack. Status code {0}. Payload: {1}'.format(r.status_code, payload))
+        utils.print_error('Failed to sent slack message: %s' % payload)
 
 
 def toggle_slack_message(status):

@@ -4,12 +4,15 @@
 
 import config
 import json
+import messages
 import pymysql
 from datetime import datetime
 
 
 def serialize_datetime(dt):
     return dt.isoformat() + 'Z'     # TODO convert to local time
+
+slack_message = "A possible email queue block is detected.\nRecipient email: {0}\nRecipient name: {1}"
 
 connection = pymysql.connect(host=config.mysql_host,
                              user=config.mysql_username,
@@ -35,10 +38,8 @@ try:
                     data['recipient'] = recipient
                     sql_delete = 'DELETE FROM core_email_queue_recipients WHERE message_id = %s'
                     cursor.execute(sql_delete, (row['message_id'],))
-                    # TODO send slack message
-                    print("A possible email queue block is detected.\nRecipient email: {0}\nRecipient name: {1}".format(
-                        recipient['recipient_email'], recipient['recipient_name']
-                    ))
+                    messages.send_slack_message(
+                        slack_message.format(recipient['recipient_email'], recipient['recipient_name']))
                 sql_delete = 'DELETE FROM core_email_queue WHERE message_id = %s'
                 cursor.execute(sql_delete, (row['message_id'],))
                 connection.commit()
