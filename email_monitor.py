@@ -28,7 +28,7 @@ try:
         result = cursor.fetchall()
         for row in result:
             created_at = row['created_at']
-            current = datetime.now()
+            current = datetime.utcnow()
             if (current - created_at).total_seconds() > config.delay_interval:
                 data = {'email': row}
                 sql_select = 'SELECT * FROM core_email_queue_recipients WHERE message_id = %s'
@@ -42,9 +42,11 @@ try:
                         slack_message.format(recipient['recipient_email'], recipient['recipient_name']))
                 sql_delete = 'DELETE FROM core_email_queue WHERE message_id = %s'
                 cursor.execute(sql_delete, (row['message_id'],))
+                del_res = cursor.fetchall()
                 connection.commit()
                 log_file = open(config.log_path + 'email_' + str(row['message_id']) + '.log', 'w')
                 json.dump(data, log_file, indent='\t', default=serialize_datetime)
                 exit(0)
 finally:
     connection.close()
+    messages.send_slack_message('Email check passed, everything is working fine.')

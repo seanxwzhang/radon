@@ -3,7 +3,7 @@ import requests
 import config
 import utils
 
-slack_enabled = False
+slack_enabled = True
 json_payload = '{"text": "%s"}'
 
 slack_messages = {
