@@ -1,15 +1,13 @@
+#!/usr/bin/python3
 # A multi-thread crawler for rebuilding website cache
 # Originally written by Tianyang Wen, modified by Xinyu Chen
 
-# Command line arguments
-# crawler num_threads base_url
-# num_threads defaults to 8
-# base_url defaults to database value
-
 import argparse
-import queue
-import requests
+import config
 import dbo
+import queue
+import re
+import requests
 import time
 import threading
 
@@ -20,13 +18,14 @@ def get_url_list(arguments):
         url_list = [arguments.base_url + entry for entry in entries]
     else:
         url_file = open(args.file, 'r')
-        url_list = [u.rstrip() for u in url_file]
+        url_list = [arguments.base_url + u.rstrip() for u in url_file]
     return url_list
 
 
 def crawler(arguments):
     """ The crawler thread function"""
     global url_queue
+    global args
     thread_id = arguments
     print("Thread {0} has started.".format(thread_id))
     while True:
@@ -34,7 +33,12 @@ def crawler(arguments):
             break
         u = url_queue.get()
         url_queue.task_done()
-        crawl(u)
+        if exclude_pattern and exclude_pattern.search(u):
+            continue
+        if args.simulate:
+            print('Simulate: %s' % u)
+        else:
+            crawl(u)
 
 
 def crawl(url):
@@ -57,11 +61,13 @@ def crawl(url):
 """Here comes the main part"""
 
 parser = argparse.ArgumentParser(description='A multi-threaded crawler for rapid cache rebuild.')
-parser.add_argument('-b', '--base_url', help='Base URL, only needed for data from database. Default to '
-                                             'http：//www.evestemptation.com. Don\'t add the trailing slash /',
-                    default='http://www.evestemptation.com')
-parser.add_argument('-f', '--file', help='file name from which the URL list is read')
+parser.add_argument('-b', '--base_url', help='Default to {0}. Do NOT add the trailing slash /'.format(config.domain_name),
+                    default=config.domain_name)
+parser.add_argument('-e', '--exclude', help='Exclude URLs that contains the specified keywords', nargs='+')
+parser.add_argument('-f', '--file', help='File name from which the URL list is read')
+parser.add_argument('-s', '--simulate', help='Simulate the crawling process', action='store_true')
 parser.add_argument('-t', '--threads', help='Number of threads to crawl. Default to 12.', type=int, default=12)
+
 args = parser.parse_args()
 mutex = threading.Lock
 url_queue = queue.Queue()
@@ -69,6 +75,9 @@ bad_urls = queue.Queue()
 time_stats = queue.Queue()
 threads = []
 urls = get_url_list(args)
+exclude_pattern = None
+if args.exclude:
+    exclude_pattern = re.compile(r'%s' % r'|'.join(args.exclude))
 for url in urls:
     url_queue.put(url)
 for i in range(args.threads):
@@ -78,7 +87,9 @@ for i in range(args.threads):
 
 for t in threads:
     t.join()
-
+if args.simulate:
+    print('Simulate is done')
+    exit(0)
 min_time = 1000.0
 max_time = 0.0
 total_time = 0.0
