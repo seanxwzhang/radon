@@ -13,7 +13,6 @@ def serialize_datetime(dt):
     return dt.isoformat() + 'Z'     # TODO convert to local time
 
 slack_message = "A possible email queue block is detected.\nRecipient email: {0}\nRecipient name: {1}"
-
 connection = pymysql.connect(host=config.mysql_host,
                              user=config.mysql_username,
                              password=config.mysql_password,
@@ -26,9 +25,11 @@ try:
         sql_select = 'SELECT * FROM core_email_queue WHERE processed_at IS NULL ORDER BY created_at'
         cursor.execute(sql_select)
         result = cursor.fetchall()
+        if len(result) == 0:
+            exit(0)
         for row in result:
             created_at = row['created_at']
-            current = datetime.now()
+            current = datetime.utcnow()
             if (current - created_at).total_seconds() > config.delay_interval:
                 data = {'email': row}
                 sql_select = 'SELECT * FROM core_email_queue_recipients WHERE message_id = %s'
