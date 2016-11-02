@@ -4,7 +4,7 @@
 
 import config
 import json
-import messages
+import messaging
 import pymysql
 from datetime import datetime
 
@@ -38,7 +38,6 @@ try:
                     data['recipient'] = recipient
                     sql_delete = 'DELETE FROM core_email_queue_recipients WHERE message_id = %s'
                     cursor.execute(sql_delete, (row['message_id'],))
-                    print('DEBUG: {0} : {1}'.format(recipient['recipient_email'], recipient['recipient_name']))
                     messages.send_slack_message(
                         slack_message.format(recipient['recipient_email'], recipient['recipient_name']))
                 sql_delete = 'DELETE FROM core_email_queue WHERE message_id = %s'

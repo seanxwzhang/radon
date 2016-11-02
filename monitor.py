@@ -8,7 +8,7 @@ import utils
 from colorama import Fore
 
 import config
-import messages
+import messaging
 import dbo
 import logfilter
 import logparser
@@ -29,7 +29,7 @@ def do_nothing(param):
 
 
 operations = {
-    'slack': messages.toggle_slack_message,
+    'slack': messaging.toggle_slack_message,
     'debug': toggle_debug
 }
 operations = collections.defaultdict(lambda: do_nothing, operations)
