@@ -38,7 +38,7 @@ try:
                     data['recipient'] = recipient
                     sql_delete = 'DELETE FROM core_email_queue_recipients WHERE message_id = %s'
                     cursor.execute(sql_delete, (row['message_id'],))
-                    messages.send_slack_message(
+                    messaging.send_slack_message(
                         slack_message.format(recipient['recipient_email'], recipient['recipient_name']))
                 sql_delete = 'DELETE FROM core_email_queue WHERE message_id = %s'
                 cursor.execute(sql_delete, (row['message_id'],))
