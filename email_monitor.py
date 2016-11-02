@@ -38,6 +38,7 @@ try:
                     data['recipient'] = recipient
                     sql_delete = 'DELETE FROM core_email_queue_recipients WHERE message_id = %s'
                     cursor.execute(sql_delete, (row['message_id'],))
+                    print('DEBUG: {0} : {1}'.format(recipient['recipient_email'], recipient['recipient_name']))
                     messages.send_slack_message(
                         slack_message.format(recipient['recipient_email'], recipient['recipient_name']))
                 sql_delete = 'DELETE FROM core_email_queue WHERE message_id = %s'
@@ -47,6 +48,7 @@ try:
                 log_file = open(config.log_path + 'email_' + str(row['message_id']) + '.log', 'w')
                 json.dump(data, log_file, indent='\t', default=serialize_datetime)
                 exit(0)
+except:
+    messages.send_slack_message('Email monitor has some error. Check email queue for possible errros!')
 finally:
     connection.close()
-    messages.send_slack_message('Email check passed, everything is working fine.')

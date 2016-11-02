@@ -18,7 +18,7 @@ def get_url_list(arguments):
         url_list = [arguments.base_url + entry for entry in entries]
     else:
         url_file = open(args.file, 'r')
-        url_list = [u.rstrip() for u in url_file]
+        url_list = [arguments.base_url + u.rstrip() for u in url_file]
     return url_list
 
 
@@ -61,8 +61,7 @@ def crawl(url):
 """Here comes the main part"""
 
 parser = argparse.ArgumentParser(description='A multi-threaded crawler for rapid cache rebuild.')
-parser.add_argument('-b', '--base_url', help='Base URL, only needed for data from database. Default to '
-                                             '{0}. Do NOT add the trailing slash /'.format(config.domain_name),
+parser.add_argument('-b', '--base_url', help='Default to {0}. Do NOT add the trailing slash /'.format(config.domain_name),
                     default=config.domain_name)
 parser.add_argument('-e', '--exclude', help='Exclude URLs that contains the specified keywords', nargs='+')
 parser.add_argument('-f', '--file', help='File name from which the URL list is read')
