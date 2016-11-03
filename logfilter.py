@@ -1,9 +1,10 @@
 # URL Filter for Log Monitor
 import urllib.parse
 
-import radon.config as config
-import radon.dbo as dbo
-import radon.messages as messages
+import config
+import dbo
+import messaging
+import utils
 
 cacheable_params = None
 host_ignore_list = None
@@ -53,16 +54,14 @@ def filter_request(entry):
     """Return True if the result should be displayed on screen"""
     host = entry['host']
     if host in host_ignore_list:
-        if config.debug_mode:
-            print('DEBUG: ignore host %s' % host)
+        utils.print_debug("Host {0} ignored".format(host))
         return False
 
     request = entry['request']
     status = entry['status']
     arr = request.split()
     if len(arr) < 3:
-        if config.debug_mode:
-            print('DEBUG: len < 3: %s' % request)
+        utils.print_debug("Request {0} ignored due to len < 3".format(request))
         return False
 
     method = arr[0]
@@ -73,19 +72,26 @@ def filter_request(entry):
         if agent_ignore_pattern.search(url):
             return False
         else:
-            messages.send_slack_message(404, url, entry['referer'], entry['agent'])
-            messages.add_to_email_queue(' '.join(entry))
+            messaging.send_slack_message(
+                "*Error*\n> *Status Code:* {0}\n> *URL:* {1}\n> *Referer:* {2}\n> *User-Agent:* {3}"
+                .format(status, url, entry['referer'], entry['agent'])
+            )
+            # messaging.add_to_email_queue(' '.join(entry))
+            utils.print_error("Status Code: {0}; URL: {1}; Referer: {2}; User-Agent: {3}"
+                              .format(status, url, entry['referer'], entry['agent']))
             dbo.store_error_request(entry)
             return True
     if status == '200':
         if url_ignore_pattern.search(url):
+            utils.print_debug("URL ignored {0}".format(url))
             return False
         else:
             dbo.store_visited_url(filter_cacheable_param(url))
             return True  # Report 200 too
     return True
+
+
 load_cacheable_param()
 load_host_ignore()
 load_url_ignore()
 load_agent_ignore()
-

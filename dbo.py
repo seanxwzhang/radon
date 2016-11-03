@@ -20,6 +20,8 @@ def destroy():
 def add_ignore_url(url):
     cur = conn.cursor()
     sql = 'INSERT OR IGNORE INTO `url_ignore_list` (pattern) VALUES (?)'
+    cur.execute(sql, (url,))
+    cur.close()
 
 
 # (Re)load host ignore list

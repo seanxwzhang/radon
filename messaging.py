@@ -1,31 +1,31 @@
+# Radon Project
+# Created by Xinyu Chen
+
+# messaging.py
 # Messaging Subsystem
-import requests
+# This module handles all messaging and notification service
+
 import config
+import requests
 import utils
 
-slack_enabled = True 
-json_payload = '{"text": "%s"}'
-
-slack_messages = {
-    404: '*HTTP 404*\nURL: {0}{1}\nreferer: {2}\nUser-Agent: {3}',
-    500: '*HTTP 500*\nURL: {0}{1}\nReferrre: {2}\nUser-Agent: {3}',
-}
-email_template = 'This email is sent from an automatic monitor program running on server.'
+slack_enabled = False
+json_payload = '{"text": "{0}"}'
 
 
 def send_slack_message(message):
     if not slack_enabled:
         return
-    payload = json_payload % message
-    r = requests.post(config.slack_url, data=payload)
-    utils.print_debug('Slack message sent %s' % payload)
-    if r.status_code != 200:
-        utils.print_error('Failed to sent slack message: %s' % payload)
+    payload = json_payload.format(message)
+    response = requests.post(config.slack_url, data=payload)
+    utils.print_debug('Slack message sent {0}'.format(payload))
+    if response.status_code != 200:
+        utils.print_error('Failed to sent slack message: {0}'.format(payload))
 
 
 def toggle_slack_message(status):
     global slack_enabled
-    print('DEBUG: slack is toggled to %s' % status)
+    utils.print_debug('slack is toggled to %s' % status)
     if status == '0':
         slack_enabled = False
     elif status == '1':
@@ -34,7 +34,7 @@ def toggle_slack_message(status):
 
 def add_to_email_queue(content):
     if config.debug_mode:
-        print('DEBUG: Added to email queue: %s' % content)
+        utils.print_debug('DEBUG: Added to email queue: %s' % content)
     pass
 
 

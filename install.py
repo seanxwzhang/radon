@@ -1,5 +1,9 @@
-# Apache Log Monitor Project
+# Radon
+# Created by Xinyu Chen <xinyu@evestemptation.com>
+
 # Database Installation
+# This script creates table structures in the database and then populate certain tables use the configure data in the
+# config module
 
 import sqlite3
 import config

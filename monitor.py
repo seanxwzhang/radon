@@ -6,6 +6,7 @@ import sys
 import utils
 
 from colorama import Fore
+from datetime import datetime
 
 import config
 import messaging
@@ -61,20 +62,21 @@ agent_ignore_pattern = dbo.load_pattern_list('agent_ignore_list', 'keyword')
 cacheable_param_pattern = dbo.load_pattern_list('cacheable_param', 'param')
 host_ignore_list = dbo.load_string_list('host_ignore_list', 'host')
 
+log_file = open('log/etus-access.log', 'r')
 while True:
-    line = sys.stdin.readline()
+    line = log_file.readline()  # sys.stdin.readline()
     if not line:
         break
     entry = logparser.parse(line)
     # check if the request has special control commands
     if check_commands(entry['request']):
         continue
-
     if logfilter.filter_request(entry):
         if entry['status'] == '200':
             color = Fore.GREEN
         else:
             color = Fore.RED
+        print("[{0}]".format(datetime.now()), end=' ')
         print(color + entry['status'], end=' ')
         print(Fore.WHITE + entry['host'], end=' ')
         print(color + entry['request'], end=' ')

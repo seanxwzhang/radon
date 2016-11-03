@@ -21,6 +21,9 @@ agent_ignore_list = []
 cacheable_param = []
 host_ignore_list = []
 
+# Log related
+log_file_path = './log/system.log'
+
 
 def toggle_debug(status):
     global debug_mode
