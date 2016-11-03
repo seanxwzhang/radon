@@ -62,9 +62,8 @@ agent_ignore_pattern = dbo.load_pattern_list('agent_ignore_list', 'keyword')
 cacheable_param_pattern = dbo.load_pattern_list('cacheable_param', 'param')
 host_ignore_list = dbo.load_string_list('host_ignore_list', 'host')
 
-log_file = open('log/etus-access.log', 'r')
 while True:
-    line = log_file.readline()  # sys.stdin.readline()
+    line = sys.stdin.readline()
     if not line:
         break
     entry = logparser.parse(line)
