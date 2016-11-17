@@ -21,7 +21,7 @@ from time import sleep
 from datetime import datetime
 
 slack_enabled = False
-json_payload = '{"text": "{0}"}'
+json_payload = '{{"text": "{0}"}}'
 
 
 def send_slack_message(message):
@@ -37,6 +37,8 @@ def send_slack_message(message):
 
 
 def send_message(message):
+    if not slack_enabled:
+            return
     payload = json_payload.format(message)
     response = requests.post(config.slack_url, data=payload)
     utils.print_debug('Slack message sent {0}'.format(payload))
@@ -45,8 +47,8 @@ def send_message(message):
 
 
 def consume_message():
-    if not slack_enabled or message_queue.empty():
-            return
+    if message_queue.empty():
+        return
     message = message_queue.get()
     send_message(message)
 
@@ -76,7 +78,9 @@ def worker(threshold=None, time_gap=None): # An ascync worker program to consume
     if time_gap is None:
         time_gap = 30
     while True:
+        # print("Worker wakes up\n")
         length = message_queue.qsize();
+        # print("Current message queue has {0} message".format(length))
         to_consume = min(length, threshold)
         for i in range(0, to_consume):
             consume_message()
@@ -91,8 +95,8 @@ def worker(threshold=None, time_gap=None): # An ascync worker program to consume
 
 message_queue = queue.Queue(maxsize = config.max_message_size)
 try:
-    worker_thread = threading.thread( target = worker, args = (config.queue_threshold, config.time_gap) )
-    worker_thread.run()
+    worker_thread = threading.Thread( target = worker, args = (config.queue_threshold, config.time_gap) )
+    worker_thread.start()
 except:
     print("Error: unable to start worker thread")
 
