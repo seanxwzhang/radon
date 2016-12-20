@@ -30,8 +30,6 @@ def load_url_ignore():
 def load_agent_ignore():
     global agent_ignore_pattern
     agent_ignore_pattern = dbo.load_pattern_list('agent_ignore_list', 'keyword')
-    import pprint
-    pprint.pprint(agent_ignore_pattern)
 
 
 def filter_cacheable_param(url):
@@ -68,9 +66,6 @@ def filter_request(entry):
 
     method = arr[0]
     url = urllib.parse.unquote(arr[1])
-    print(agent_ignore_pattern.search(entry['agent']))
-    if agent_ignore_pattern.search(entry['agent']):
-        print('true')
     if method != 'GET' or status == '304' or agent_ignore_pattern.search(entry['agent']):
         return False
     if status in ['401', '403', '404', '500', '503']:
