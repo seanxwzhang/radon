@@ -81,4 +81,9 @@ for param in config.host_ignore_list:
     c.execute(sql_host_ignore, (param[0], param[1]))
 conn.commit()
 
+sql_agent_mock = 'INSERT INTO `host_agent_list`' \
+                 '(id, keyword, description) VALUES (?, ?)'
+c.execute(sql_agent_mock, (1, 'http://www.google.com/bot.html', 'Googlebot'))
+conn.commit()
+
 print('Database installation completed.')
