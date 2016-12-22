@@ -15,6 +15,11 @@ check_interval = 600    # seconds
 delay_interval = 300    # seconds
 log_path = './log/'
 
+# message parameters
+max_message_size = 10   # maximum number of messages the queue can hold
+queue_threshold = 5     # maximum number of messsages one thread coudl consume at a time
+time_gap = 30           # seconds
+
 # monitor parameters
 url_ignore_list = []
 agent_ignore_list = []

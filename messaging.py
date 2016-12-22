@@ -94,9 +94,6 @@ def worker(threshold=None, time_gap=None): # An ascync worker program to consume
 
 
 message_queue = queue.Queue(maxsize = config.max_message_size)
-try:
-    worker_thread = threading.Thread( target = worker, args = (config.queue_threshold, config.time_gap) )
-    worker_thread.start()
-except:
-    print("Error: unable to start worker thread")
+worker_thread = threading.Thread( target = worker, args = (config.queue_threshold, config.time_gap) )
+worker_thread.start()
 
