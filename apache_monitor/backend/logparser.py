@@ -20,4 +20,8 @@ log_pattern = re.compile(r'\s+'.join(parts) + r'\s*\Z')
 def parse(line):
     m = log_pattern.match(line)
     res = m.groupdict()
+    req = res['request'].split(' ')
+    res['method'] = req[0]
+    res['uri'] = req[1]
+    res['version'] = req[2]
     return res

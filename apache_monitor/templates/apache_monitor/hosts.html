@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Remote Hosts</title>
+</head>
+<body>
+    <h1>Remote Hosts</h1>
+    <hr />
+    <table>
+      <tr>
+        <th>IP Address</th>
+        <th>Domain Name</th>
+          <th>Organization</th>
+      </tr>
+      {% for host in all_hosts %}
+            <tr>
+                <td>{{ host.ip_address }}</td>
+                <td>{{ host.domain_name }}</td>
+                <td>{{ host.organization }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
